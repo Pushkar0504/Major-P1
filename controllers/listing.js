@@ -54,6 +54,11 @@ module.exports.createListing= async(req,res)=>{
         };
     } else {
         console.warn('Geocoding failed for address:', address);
+        // Fallback: set default coordinates (e.g., center of the world or a placeholder)
+        newListing.geometry = {
+            type: 'Point',
+            coordinates: [0, 0]  // Default to null island or handle appropriately
+        };
     }
 
     await newListing.save();

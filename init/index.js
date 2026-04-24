@@ -14,7 +14,11 @@ async function main() {
 
 const initDB= async () => {
     await Listing.deleteMany({});
-    initData.data=initData.data.map(obj => ({...obj, owner: "65f0c8c7f2c0b2e8f0c8c7f2"}));
+    initData.data=initData.data.map(obj => ({
+        ...obj,
+        owner: "65f0c8c7f2c0b2e8f0c8c7f2",
+        geometry: obj.geometry || { type: "Point", coordinates: [0, 0] }
+    }));
     await Listing.insertMany(initData.data);
     console.log("DB Initialized with sample data");
 }
