@@ -29,41 +29,47 @@ const usersController= require("./controllers/users.js");
 const multer  = require('multer');
 const { storage } = require('./cloudconfig.js');
 const upload = multer({ storage: storage });
-const dbUrl= process.env.ATLASDB_URL;
+const dbUrl = process.env.NODE_ENV === 'production'
+  ? process.env.ATLASDB_URL
+  : 'mongodb://127.0.0.1:27017/Wanderlust';
 
-
+ 
 
  
 
 
 
+ 
 
-const mongoURI = 'mongodb://localhost:27017/Wanderlust';
-
- async function main() {
-    await mongoose.connect(dbUrl);
- }
+  async function main() {
+  await mongoose.connect(dbUrl);
+}
 
 main()
     .then(() => {
         console.log('Connected to MongoDB');
+        app.listen(8080, () => {
+            console.log('Server is running on port 8080');
+        });
     })
     .catch(err =>{
         console.log(err);
     });
 
- 
-
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
-        secret: 'process.env.SECRET',
+        secret: process.env.SECRET,
     },
     touchAfter: 24 * 60 * 60,  
 });
 
+store.on("error", ()=>{
+    console.log("Session Store Error!");
+});
     
 const sessionOptions={
+    store,
     secret:"mysupersecretcode",
     resave:false,
     saveUninitialized: true,
@@ -74,10 +80,7 @@ const sessionOptions={
 
     },
 };
-store.on("error", ()=>{
-    console.log("MongoStore error:", err);
-});
-
+ 
  
 
 

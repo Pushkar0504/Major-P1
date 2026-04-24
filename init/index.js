@@ -8,14 +8,6 @@ const Listing= require('../models/listing.js');
 const mongoURI = 'mongodb://localhost:27017/Wanderlust';
 
   
-main()
-    .then(() => {
-        console.log('Connected to MongoDB');
-    })
-    .catch(err =>{
-        console.log(err);
-    }); 
-    
 async function main() {
     await mongoose.connect(mongoURI);
 }
@@ -26,4 +18,10 @@ const initDB= async () => {
     await Listing.insertMany(initData.data);
     console.log("DB Initialized with sample data");
 }
-initDB();
+
+main().then(() => {
+    console.log('Connected to MongoDB');
+    initDB();
+}).catch(err => {
+    console.log(err);
+});
